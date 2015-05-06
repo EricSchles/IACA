@@ -1,0 +1,17 @@
+base
+slidify
+slidifyLibraries
+DBI
+RSQLite
+dplyr
+ggplot2
+ggthemes
+googleVis
+rCharts
+rMaps
+ggmap
+httr
+twitteR
+NLP
+tm
+SnowballC

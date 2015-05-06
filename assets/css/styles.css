@@ -1,0 +1,115 @@
+<style type="text/css">
+  strong {
+    font-weight:bold;
+  }
+
+  em {
+    font-style:italic;
+  }
+
+  cite.style3 {
+    font-size:smaller;
+    font-weight:bold;
+  }
+
+  .style2 {
+    font-size:26px;
+    color:red;
+    font-weight:bold;
+  }
+
+  slide.codefont pre {
+    font-size: 20px;
+  }
+
+  slide.codefont pre code {
+    overflow:scroll;
+    width:100%;
+    max-height:280px;
+  }
+
+  slide.codefont2 div p {
+    font-size:12px;
+  }
+
+  slide.codefont2 div {
+    text-align: left;
+  }
+
+  slide.codefont2 pre {
+    font-size: 18px;
+  }
+
+  slide.codefont2 pre code {
+    overflow: scroll;
+    max-height: 500px;
+  }
+
+  slide.codefont3 pre code {
+    overflow: scroll;
+    max-height: 200px;
+  }
+
+  .title-slide {
+    background-color: #FFFFFF;
+  }
+
+  .title-slide hgroup > h1,
+  .title-slide hgroup > h2 {
+    color: #2F4F4F;
+  }
+
+  .mySegue {
+    background-color: #2F4F4F;
+  }
+
+  slide.mySegue hgroup > h2 {
+    color: white;
+    position: absolute;
+    bottom: 200px;
+    font-size:65px;
+  }
+
+  pre .preprocessor {
+    color: cadetblue;
+    font-weight: normal;
+  }
+
+  pre code .comment {
+    color: cadetblue;
+  }
+
+  slide.codefont2 p {
+    margin-bottom: 0px;
+  }
+
+  slides > slide:not(.dontCount):after {
+    content: '';
+  }
+
+  q {
+    font-size: 14px;
+    font-style: italic;
+    color: gray;
+    margin-top: 25px;
+    line-height: 24px;
+  }
+
+  cite {
+    margin-left: 85px;
+    font-size: 16px;
+  }
+
+  .center {
+    text-align: center;
+    margin-top: 16px;
+  }
+
+  a {
+    border-bottom: none;
+  }
+
+  a img {
+    border: none;
+  }
+</style>

@@ -1,0 +1,1782 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>A Brief Introduction to R</title>
+  <meta charset="utf-8">
+  <meta name="description" content="A Brief Introduction to R">
+  <meta name="author" content="Bryan Britten">
+  <meta name="generator" content="slidify" />
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta http-equiv="X-UA-Compatible" content="chrome=1">
+  <link rel="stylesheet" href="/Library/Frameworks/R.framework/Versions/3.1/Resources/library/slidifyLibraries/libraries/frameworks/io2012/css/default.css" media="all" >
+  <link rel="stylesheet" href="/Library/Frameworks/R.framework/Versions/3.1/Resources/library/slidifyLibraries/libraries/frameworks/io2012/css/phone.css" 
+    media="only screen and (max-device-width: 480px)" >
+  <link rel="stylesheet" href="/Library/Frameworks/R.framework/Versions/3.1/Resources/library/slidifyLibraries/libraries/frameworks/io2012/css/slidify.css" >
+  <link rel="stylesheet" href="/Library/Frameworks/R.framework/Versions/3.1/Resources/library/slidifyLibraries/libraries/highlighters/highlight.js/css/github.css" />
+  <base target="_blank"> <!-- This amazingness opens all links in a new tab. -->  <link rel=stylesheet href="/Library/Frameworks/R.framework/Versions/3.1/Resources/library/slidifyLibraries/libraries/widgets/bootstrap/css/bootstrap.css"></link>
+<link rel=stylesheet href="/Library/Frameworks/R.framework/Versions/3.1/Resources/library/slidifyLibraries/libraries/widgets/interactive/css/aceeditor.css"></link>
+<link rel=stylesheet href="./assets/css/ribbons.css"></link>
+<link rel=stylesheet href="./assets/css/styles.css"></link>
+
+  
+  <!-- Grab CDN jQuery, fall back to local if offline -->
+  <script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.7.min.js"></script>
+  <script>window.jQuery || document.write('<script src="/Library/Frameworks/R.framework/Versions/3.1/Resources/library/slidifyLibraries/libraries/widgets/quiz/js/jquery.js"><\/script>')</script> 
+  <script data-main="/Library/Frameworks/R.framework/Versions/3.1/Resources/library/slidifyLibraries/libraries/frameworks/io2012/js/slides" 
+    src="/Library/Frameworks/R.framework/Versions/3.1/Resources/library/slidifyLibraries/libraries/frameworks/io2012/js/require-1.0.8.min.js">
+  </script>
+  
+  
+
+</head>
+<body style="opacity: 0">
+  <slides class="layout-widescreen">
+    
+    <!-- LOGO SLIDE -->
+        <slide class="title-slide segue nobackground">
+  <hgroup class="auto-fadein">
+    <h1>A Brief Introduction to R</h1>
+    <h2>Full Spectrum Crime Analysis Under One Hood</h2>
+    <p>Bryan Britten<br/>Financial Intelligence Analyst - New York County District Attorney's Office</p>
+  </hgroup>
+  <article></article>  
+</slide>
+    
+
+    <!-- SLIDES -->
+    <slide class="title-slide mySegue" id="slide-1" style="background:;">
+  <hgroup>
+    <h2>Introductions</h2>
+  </hgroup>
+  <article data-timings="">
+    
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-2" style="background:;">
+  <hgroup>
+    <h2>Who am I?</h2>
+  </hgroup>
+  <article data-timings="">
+    <ul>
+<li>Graduated from Johns Hopkins University with a master&#39;s degree in Economics, focusing on statistics and econometrics. </li>
+<li>Spent three years at a market research company learning computer programming and honing skills in data science.</li>
+<li>Currently work for the Manhattan District Attorney&#39;s Office in the Major Economic Crimes Bureau investigating money laundering and terrorist financing.</li>
+</ul>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-3" style="background:;">
+  <hgroup>
+    <h2>What is R?</h2>
+  </hgroup>
+  <article data-timings="">
+    <ul>
+<li>Completely free, open-source software that was designed by statisticians for statisticians.</li>
+<li>Over 6,142 packages (aka plugins) on the R website.</li>
+<li>Growing quickly in both academic and non-academic industries.</li>
+<li>Currently being used by companies such as Google, Facebook, Firefox, Microsoft, and Twitter.</li>
+</ul>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-4" style="background:;">
+  <hgroup>
+    <h2>Why Use R?</h2>
+  </hgroup>
+  <article data-timings="">
+    <p><img src="wordcloud.png" alt="wordcloud"></p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-5" style="background:;">
+  <hgroup>
+    <h2>Before We Get Started</h2>
+  </hgroup>
+  <article data-timings="">
+    <ul>
+<li>I&#39;m going to be moving quick. This is not a tutorial on how to get started on R, but is instead an introduction to the program and what it can do for crime/intelligence analysis.</li>
+<li>It&#39;s going to be a bit overwhelming, especially since the syntax won&#39;t look like what you&#39;re used to. R syntax is different from SQL, Visual Basic, and definitely from Excel. Don&#39;t let it deter you.</li>
+<li>With that being said, I want to admit up front that while R is free, it comes with a cost. There is a fairly steep learning curve in the beginning, but overcoming it is quick.</li>
+</ul>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="title-slide mySegue" id="slide-6" style="background:;">
+  <hgroup>
+    <h2>Loading and Querying Data</h2>
+  </hgroup>
+  <article data-timings="">
+    
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="codefont2" id="slide-7" style="background:;">
+  <hgroup>
+    <h2>Loading Data into R</h2>
+  </hgroup>
+  <article data-timings="">
+    <pre><code class="r">#Connect to an Access database:
+library(RODBC)
+con &lt;- odbcConnect(&#39;path/to/your/access_database.db&#39;, uid=&#39;user_name&#39;, pwd=&#39;password&#39;)
+
+#Connect to Excel database:
+library(gdata)
+dat &lt;- read.xls(&#39;path/to/your/excel_database.xls&#39;, sheet=1, 
+                na.strings=c(&#39;NA&#39;, &#39;&#39;, &#39;#DIV/0!&#39;))
+
+#Connect to a SQL database:
+library(RSQLite)
+con &lt;- dbConnect(SQLite(), &#39;path/to/your/sql_database.db&#39;)
+
+#Ideally, you&#39;ll be working with CSV and TXT files:
+dat &lt;- read.table(&#39;path/to/file.txt&#39;, header=T, sep=&#39;\t&#39;, stringsAsFactors=F)
+#-or-
+dat &lt;- read.csv(&#39;path/to/file.csv&#39;, stringsAsFactors=F)
+</code></pre>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="codefont" id="slide-8" style="background:;">
+  <hgroup>
+    <h2>Querying Data - SQL</h2>
+  </hgroup>
+  <article data-timings="">
+    <pre><code class="r">library(RSQLite)
+con &lt;- dbConnect(SQLite(), dbname=&#39;Crimes.db&#39;)
+dbGetQuery(con, &#39;SELECT * FROM Crime LIMIT 3&#39;)
+</code></pre>
+
+<pre><code>##        ID CaseNumber                   Date                Block
+## 1 1391916    G106253 02/22/2001 12:01:00 AM 057XX S CARPENTER ST
+## 2 8183052   HT417641 07/27/2011 05:15:00 AM  106XX S OGLESBY AVE
+## 3 3704568   HK807015 12/13/2004 05:45:00 PM     001XX S STATE ST
+##               Crime             Description     LocDescription Arrest Beat
+## 1 CRIMINAL TRESPASS              TO VEHICLE             STREET   true  712
+## 2           BATTERY DOMESTIC BATTERY SIMPLE          APARTMENT   true  434
+## 3             THEFT            RETAIL THEFT SMALL RETAIL STORE   true  123
+##   District Ward Year                      Location
+## 1       NA   NA 2001 (41.789585525, -87.650967517)
+## 2        4   10 2011 (41.702083163, -87.565281284)
+## 3        1   42 2004 (41.879875934, -87.627575059)
+</code></pre>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="codefont" id="slide-9" style="background:;">
+  <article data-timings="">
+    <pre><code class="r">dbListTables(con)
+</code></pre>
+
+<pre><code>## [1] &quot;Crime&quot;
+</code></pre>
+
+<pre><code class="r">dbListFields(con, &#39;Crime&#39;)
+</code></pre>
+
+<pre><code>##  [1] &quot;ID&quot;             &quot;CaseNumber&quot;     &quot;Date&quot;           &quot;Block&quot;         
+##  [5] &quot;Crime&quot;          &quot;Description&quot;    &quot;LocDescription&quot; &quot;Arrest&quot;        
+##  [9] &quot;Beat&quot;           &quot;District&quot;       &quot;Ward&quot;           &quot;Year&quot;          
+## [13] &quot;Location&quot;
+</code></pre>
+
+<pre><code class="r">dbGetQuery(con, &#39;SELECT ID, Date, Block FROM Crime 
+           WHERE Block LIKE &quot;% Av%&quot; LIMIT 3&#39;)
+</code></pre>
+
+<pre><code>##        ID                   Date               Block
+## 1 8183052 07/27/2011 05:15:00 AM 106XX S OGLESBY AVE
+## 2 2765161 05/31/2003 02:00:00 AM  063XX S MENARD AVE
+## 3 5546109 05/17/2007 12:24:00 PM 084XX S SAGINAW AVE
+</code></pre>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="codefont" id="slide-10" style="background:;">
+  <article data-timings="">
+    <pre><code class="r">dbExistsTable(con, &#39;Totals&#39;)
+</code></pre>
+
+<pre><code>## [1] FALSE
+</code></pre>
+
+<pre><code class="r">dbGetQuery(con, &#39;CREATE TABLE Totals AS SELECT DISTINCT 
+           Date, count(&quot;Crime&quot;) as Total FROM Crime GROUP BY Date&#39;)
+dbGetQuery(con, &#39;SELECT * FROM Totals LIMIT 5&#39;)
+</code></pre>
+
+<pre><code>##                     Date Total
+## 1 01/01/2001 01:00:00 AM     1
+## 2 01/01/2001 01:07:50 PM     1
+## 3 01/01/2001 02:00:00 AM     1
+## 4 01/01/2001 02:21:38 PM     1
+## 5 01/01/2001 02:34:00 AM     1
+</code></pre>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="codefont" id="slide-11" style="background:;">
+  <article data-timings="">
+    <pre><code class="r">dbListTables(con)
+</code></pre>
+
+<pre><code>## [1] &quot;Crime&quot;  &quot;Totals&quot;
+</code></pre>
+
+<pre><code class="r">dbRemoveTable(con, &#39;Totals&#39;)
+</code></pre>
+
+<pre><code>## [1] TRUE
+</code></pre>
+
+<pre><code class="r">dbListTables(con)
+</code></pre>
+
+<pre><code>## [1] &quot;Crime&quot;
+</code></pre>
+
+<pre><code class="r">dbDisconnect(con)
+</code></pre>
+
+<pre><code>## [1] TRUE
+</code></pre>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="codefont" id="slide-12" style="background:;">
+  <article data-timings="">
+    <pre><code class="r">con &lt;- dbConnect(SQLite(), dbname=&#39;Investigations.db&#39;)
+dbGetQuery(con, &#39;SELECT * FROM Cases&#39;)
+</code></pre>
+
+<pre><code>##    Case     Detective
+## 1     1      John Doe
+## 2     1    Bill Smith
+## 3     1   Diane Hader
+## 4     2 Alexis Random
+## 5     2   Diane Hader
+## 6     3      John Doe
+## 7     4    Bill Smith
+## 8     4   Diane Hader
+## 9     4 Alexis Random
+## 10    5      John Doe
+## 11    5   Diane Hader
+</code></pre>
+
+<p>Question: What is the easiest way to get all of the detectives working a case
+on the same line?<br><br>
+We&#39;ll revist this later.</p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="codefont" id="slide-13" style="background:;">
+  <hgroup>
+    <h2>Querying Data - Base R</h2>
+  </hgroup>
+  <article data-timings="">
+    <pre><code class="r">dat &lt;- read.csv(&#39;Chicago Crimes (subset).csv&#39;, stringsAsFactors=F)
+head(dat, n=3)
+</code></pre>
+
+<pre><code>##        ID CaseNumber                   Date                Block
+## 1 1391916    G106253 02/22/2001 12:01:00 AM 057XX S CARPENTER ST
+## 2 8183052   HT417641 07/27/2011 05:15:00 AM  106XX S OGLESBY AVE
+## 3 3704568   HK807015 12/13/2004 05:45:00 PM     001XX S STATE ST
+##               Crime             Description     LocDescription Arrest Beat
+## 1 CRIMINAL TRESPASS              TO VEHICLE             STREET   true  712
+## 2           BATTERY DOMESTIC BATTERY SIMPLE          APARTMENT   true  434
+## 3             THEFT            RETAIL THEFT SMALL RETAIL STORE   true  123
+##   District Ward Year                      Location
+## 1       NA   NA 2001 (41.789585525, -87.650967517)
+## 2        4   10 2011 (41.702083163, -87.565281284)
+## 3        1   42 2004 (41.879875934, -87.627575059)
+</code></pre>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="codefont" id="slide-14" style="background:;">
+  <article data-timings="">
+    <pre><code class="r">head(dat[grepl(&#39;.*Av.*&#39;, dat$Block, ignore.case=T), c(&#39;ID&#39;, &#39;Date&#39;, &#39;Block&#39;)], n=5)
+</code></pre>
+
+<pre><code>##        ID                   Date                 Block
+## 2 8183052 07/27/2011 05:15:00 AM   106XX S OGLESBY AVE
+## 4 2765161 05/31/2003 02:00:00 AM    063XX S MENARD AVE
+## 5 5546109 05/17/2007 12:24:00 PM   084XX S SAGINAW AVE
+## 6 1816315 10/26/2001 03:26:00 PM 090XX S COMMERCIAL AV
+## 8 1814539 10/26/2001 03:30:00 PM    048XX N ASHLAND AV
+</code></pre>
+
+<pre><code class="r">d.1 &lt;- aggregate(list(Count=dat$Crime), list(Date=dat$Date), length)
+head(d.1, n=5)
+</code></pre>
+
+<pre><code>##                     Date Count
+## 1 01/01/2001 01:00:00 AM     1
+## 2 01/01/2001 01:07:50 PM     1
+## 3 01/01/2001 02:00:00 AM     1
+## 4 01/01/2001 02:21:38 PM     1
+## 5 01/01/2001 02:34:00 AM     1
+</code></pre>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="codefont" id="slide-15" style="background:;">
+  <article data-timings="">
+    <pre><code class="r">d.1 &lt;- dat[dat$Arrest == &#39;true&#39;, ]
+d.1[1:5, c(&#39;ID&#39;, &#39;Date&#39;, &#39;Arrest&#39;)]
+</code></pre>
+
+<pre><code>##         ID                   Date Arrest
+## 1  1391916 02/22/2001 12:01:00 AM   true
+## 2  8183052 07/27/2011 05:15:00 AM   true
+## 3  3704568 12/13/2004 05:45:00 PM   true
+## 9  9257262 08/10/2013 11:59:00 PM   true
+## 14 7871577 01/02/2011 10:30:00 PM   true
+</code></pre>
+
+<pre><code class="r">d.1 &lt;- dat[, c(&#39;Date&#39;, &#39;ID&#39;, &#39;Crime&#39;, &#39;Arrest&#39;)]
+d.1[1:5, ]
+</code></pre>
+
+<pre><code>##                     Date      ID             Crime Arrest
+## 1 02/22/2001 12:01:00 AM 1391916 CRIMINAL TRESPASS   true
+## 2 07/27/2011 05:15:00 AM 8183052           BATTERY   true
+## 3 12/13/2004 05:45:00 PM 3704568             THEFT   true
+## 4 05/31/2003 02:00:00 AM 2765161             THEFT  false
+## 5 05/17/2007 12:24:00 PM 5546109             THEFT  false
+</code></pre>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="codefont" id="slide-16" style="background:;">
+  <article data-timings="">
+    <pre><code class="r">head(dat$Description)
+</code></pre>
+
+<pre><code>## [1] &quot;TO VEHICLE&quot;              &quot;DOMESTIC BATTERY SIMPLE&quot;
+## [3] &quot;RETAIL THEFT&quot;            &quot;$500 AND UNDER&quot;         
+## [5] &quot;FROM BUILDING&quot;           &quot;SIMPLE&quot;
+</code></pre>
+
+<pre><code class="r">head(tolower(dat$Description))
+</code></pre>
+
+<pre><code>## [1] &quot;to vehicle&quot;              &quot;domestic battery simple&quot;
+## [3] &quot;retail theft&quot;            &quot;$500 and under&quot;         
+## [5] &quot;from building&quot;           &quot;simple&quot;
+</code></pre>
+
+<pre><code class="r">t.1 &lt;- gsub(&quot;\\b([A-Z])([A-Z]+)&quot;, &quot;\\U\\1\\L\\2&quot; ,dat$Description, perl=TRUE)
+head(t.1)
+</code></pre>
+
+<pre><code>## [1] &quot;To Vehicle&quot;              &quot;Domestic Battery Simple&quot;
+## [3] &quot;Retail Theft&quot;            &quot;$500 And Under&quot;         
+## [5] &quot;From Building&quot;           &quot;Simple&quot;
+</code></pre>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="codefont" id="slide-17" style="background:;">
+  <article data-timings="">
+    <pre><code class="r">unique(dat$Crime)[1:10]
+</code></pre>
+
+<pre><code>##  [1] &quot;CRIMINAL TRESPASS&quot;                &quot;BATTERY&quot;                         
+##  [3] &quot;THEFT&quot;                            &quot;ASSAULT&quot;                         
+##  [5] &quot;INTERFERENCE WITH PUBLIC OFFICER&quot; &quot;CRIMINAL DAMAGE&quot;                 
+##  [7] &quot;NARCOTICS&quot;                        &quot;PUBLIC PEACE VIOLATION&quot;          
+##  [9] &quot;WEAPONS VIOLATION&quot;                &quot;OFFENSE INVOLVING CHILDREN&quot;
+</code></pre>
+
+<pre><code class="r">x &lt;- sample(dat$CaseNumber, 1000, replace=F)
+y &lt;- sample(dat$CaseNumber, 1000, replace=F)
+x[which(x %in% y)]
+</code></pre>
+
+<pre><code>##  [1] &quot;HN385082&quot; &quot;HR573805&quot; &quot;HX541057&quot; &quot;HN433083&quot; &quot;HL113311&quot; &quot;HJ128650&quot;
+##  [7] &quot;HP210052&quot; &quot;G175004&quot;  &quot;HT150630&quot; &quot;HH487009&quot;
+</code></pre>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="codefont" id="slide-18" style="background:;">
+  <article data-timings="">
+    <pre><code class="r">grep(&#39;.*CRIMINAL.*&#39;, unique(dat$Crime), ignore.case=T, value=T)
+</code></pre>
+
+<pre><code>## [1] &quot;CRIMINAL TRESPASS&quot; &quot;CRIMINAL DAMAGE&quot;   &quot;NON - CRIMINAL&quot;
+</code></pre>
+
+<pre><code class="r">dat$Crime[dat$Crime == &#39;NON-CRIMINAL (SUBJECT SPECIFIED)&#39;] &lt;- &#39;NON-CRIMINAL&#39;
+grep(&#39;.*CRIMINAL.*&#39;, unique(dat$Crime), ignore.case=T, value=T)
+</code></pre>
+
+<pre><code>## [1] &quot;CRIMINAL TRESPASS&quot; &quot;CRIMINAL DAMAGE&quot;   &quot;NON - CRIMINAL&quot;
+</code></pre>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="codefont" id="slide-19" style="background:;">
+  <article data-timings="">
+    <pre><code class="r">d.1 &lt;- read.csv(&#39;Investigations.csv&#39;, stringsAsFactors=F)
+d.1
+</code></pre>
+
+<pre><code>##    Case     Detective
+## 1     1      John Doe
+## 2     1    Bill Smith
+## 3     1   Diane Hader
+## 4     2 Alexis Random
+## 5     2   Diane Hader
+## 6     3      John Doe
+## 7     4    Bill Smith
+## 8     4   Diane Hader
+## 9     4 Alexis Random
+## 10    5      John Doe
+## 11    5   Diane Hader
+</code></pre>
+
+<p>We wanted to know the easiest way to rearrange the data so that each case was only one row. Not very easy to do in SQL, but let&#39;s see how we can do it in R.</p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="codefont3" id="slide-20" style="background:;">
+  <article data-timings="">
+    <pre><code class="r">d.1$Index &lt;- ave(rep(1, nrow(d.1)), d.1$Case, FUN=seq_along)
+d.1
+</code></pre>
+
+<pre><code>##    Case     Detective Index
+## 1     1      John Doe     1
+## 2     1    Bill Smith     2
+## 3     1   Diane Hader     3
+## 4     2 Alexis Random     1
+## 5     2   Diane Hader     2
+## 6     3      John Doe     1
+## 7     4    Bill Smith     1
+## 8     4   Diane Hader     2
+## 9     4 Alexis Random     3
+## 10    5      John Doe     1
+## 11    5   Diane Hader     2
+</code></pre>
+
+<pre><code class="r">reshape(d.1, idvar=&#39;Case&#39;, timevar=&#39;Index&#39;, direction=&#39;wide&#39;)
+</code></pre>
+
+<pre><code>##    Case   Detective.1 Detective.2   Detective.3
+## 1     1      John Doe  Bill Smith   Diane Hader
+## 4     2 Alexis Random Diane Hader          &lt;NA&gt;
+## 6     3      John Doe        &lt;NA&gt;          &lt;NA&gt;
+## 7     4    Bill Smith Diane Hader Alexis Random
+## 10    5      John Doe Diane Hader          &lt;NA&gt;
+</code></pre>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="codefont" id="slide-21" style="background:;">
+  <hgroup>
+    <h2>Working With Data - dplyr</h2>
+  </hgroup>
+  <article data-timings="">
+    <pre><code class="r">d.1 &lt;- dat %&gt;% filter(grepl(&#39;.*Av.*&#39;, Block, ignore.case=T)) %&gt;% select(ID, Date, Block)
+d.1[1:3, ]
+</code></pre>
+
+<pre><code>##        ID                   Date               Block
+## 1 8183052 07/27/2011 05:15:00 AM 106XX S OGLESBY AVE
+## 2 2765161 05/31/2003 02:00:00 AM  063XX S MENARD AVE
+## 3 5546109 05/17/2007 12:24:00 PM 084XX S SAGINAW AVE
+</code></pre>
+
+<pre><code class="r">d.1 &lt;- dat %&gt;% group_by(Date) %&gt;% summarise(Count=n())
+d.1[1:3, ]
+</code></pre>
+
+<pre><code>## Source: local data frame [3 x 2]
+## 
+##                     Date Count
+## 1 01/01/2001 01:00:00 AM     1
+## 2 01/01/2001 01:07:50 PM     1
+## 3 01/01/2001 02:00:00 AM     1
+</code></pre>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="codefont" id="slide-22" style="background:;">
+  <article data-timings="">
+    <pre><code class="r">dat$Street &lt;- dat$Block %&gt;% strsplit(&#39;\\d*XX &#39;) %&gt;% lapply(function(z) z[2]) %&gt;% unlist()
+head(dat$Street)
+</code></pre>
+
+<pre><code>## [1] &quot;S CARPENTER ST&quot;  &quot;S OGLESBY AVE&quot;   &quot;S STATE ST&quot;      &quot;S MENARD AVE&quot;   
+## [5] &quot;S SAGINAW AVE&quot;   &quot;S COMMERCIAL AV&quot;
+</code></pre>
+
+<pre><code class="r">d.1 &lt;- dat %&gt;% group_by(Street) %&gt;% summarise(NumCrimes=n()) %&gt;% arrange(desc(NumCrimes))
+head(d.1, n=5)
+</code></pre>
+
+<pre><code>## Source: local data frame [5 x 2]
+## 
+##           Street NumCrimes
+## 1             NA      2406
+## 2     S STATE ST      1182
+## 3 S MICHIGAN AVE       938
+## 4   W MADISON ST       894
+## 5   S HALSTED ST       874
+</code></pre>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="codefont" id="slide-23" style="background:;">
+  <article data-timings="">
+    <pre><code class="r">dat %&gt;% group_by(Street, Crime) %&gt;% summarise(Count=n()) %&gt;% 
+  mutate(maxCount=max(Count)) %&gt;% 
+  mutate(primaryCrime = ifelse(Count == maxCount, Crime, &#39;&#39;)) %&gt;% 
+  arrange(desc(Count)) %&gt;% group_by(Street) %&gt;% filter(row_number(Street) == 1) %&gt;% 
+  select(Street, primaryCrime)
+</code></pre>
+
+<pre><code>## Source: local data frame [2,502 x 2]
+## Groups: Street
+## 
+##        Street      primaryCrime
+## 1    E 100 PL CRIMINAL TRESPASS
+## 2    E 100 ST   CRIMINAL DAMAGE
+## 3  E 100TH PL           BATTERY
+## 4  E 100TH ST           BATTERY
+## 5    E 101 ST           BATTERY
+## 6  E 101ST PL   CRIMINAL DAMAGE
+## 7  E 101ST ST   CRIMINAL DAMAGE
+## 8    E 102 ST   CRIMINAL DAMAGE
+## 9  E 102ND ST           BATTERY
+## 10   E 103 PL           BATTERY
+## ..        ...               ...
+</code></pre>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-24" style="background:;">
+  <hgroup>
+    <h2>Summary</h2>
+  </hgroup>
+  <article data-timings="">
+    <ul>
+<li>SQL has the upper hand when it comes to querying and manipulating databases with its &#39;sentence like&#39; syntax that is easy to understand.</li>
+<li>R takes its own approach that can either mimic SQL with its operations or allow the user to simply use SQL.</li>
+<li>In addition, R has some unique functions, some of which are very powerful, such as regular expressions, that truly enhance the user&#39;s ability to query and manipulate.</li>
+<li>The dplyr package introduces a nice bridge between the power of R and the easy-to-understand language of SQL.</li>
+<li>The true advantage of R, as stated before, is that now that we have our data loaded and manipulated, we can start playing.</li>
+</ul>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="title-slide. mySegue" id="slide-25" style="background:;">
+  <hgroup>
+    <h2>Quantitative Analyses</h2>
+  </hgroup>
+  <article data-timings="">
+    
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="codefont" id="slide-26" style="background:;">
+  <hgroup>
+    <h2>Descriptive Statistics</h2>
+  </hgroup>
+  <article data-timings="">
+    <p>R&#39;s primary purpose when it was created was to serve as a statistical analysis program, which means it&#39;s capable of calculating all of the values you&#39;re used to doing in Excel:</p>
+
+<ul>
+<li>Mean</li>
+<li>Median</li>
+<li>Mode</li>
+<li>Quantiles</li>
+<li>Range</li>
+<li>Variance</li>
+<li>Standard Deviation</li>
+<li>Correlations</li>
+</ul>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="codefont" id="slide-27" style="background:;">
+  <article data-timings="">
+    <pre><code class="r">dat &lt;- read.csv(&#39;Chicago Crimes (subset).csv&#39;, stringsAsFactors=F)
+d.1 &lt;- dat %&gt;% group_by(Beat, Year) %&gt;% summarise(Count=n())
+d.1
+</code></pre>
+
+<pre><code>## Source: local data frame [4,198 x 3]
+## Groups: Beat
+## 
+##    Beat Year Count
+## 1   111 2001    30
+## 2   111 2002    32
+## 3   111 2003    28
+## 4   111 2004    23
+## 5   111 2005    15
+## 6   111 2006    13
+## 7   111 2007    23
+## 8   111 2008    18
+## 9   111 2009    22
+## 10  111 2010    20
+## ..  ...  ...   ...
+</code></pre>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="codefont3" id="slide-28" style="background:;">
+  <article data-timings="">
+    <pre><code class="r">d.1 %&gt;% 
+  group_by(Beat) %&gt;% 
+  summarise(Mean = mean(Count), Median=median(as.numeric(Count)), 
+            Variance=var(Count), StDev=sd(Count))
+</code></pre>
+
+<pre><code>## Source: local data frame [303 x 5]
+## 
+##    Beat     Mean Median  Variance     StDev
+## 1   111 21.13333   23.0  58.55238  7.651953
+## 2   112 19.80000   20.0  71.74286  8.470116
+## 3   113 16.80000   18.0  50.74286  7.123402
+## 4   114  8.40000   12.0  46.80000  6.841053
+## 5   121  8.00000    6.5  55.20000  7.429670
+## 6   122 32.46667   32.0 145.98095 12.082258
+## 7   123 22.80000   23.0  60.60000  7.784600
+## 8   124 15.40000   15.0  17.54286  4.188419
+## 9   131 21.06667   23.0  73.20952  8.556256
+## 10  132 33.40000   40.0 276.11429 16.616687
+## ..  ...      ...    ...       ...       ...
+</code></pre>
+
+<pre><code class="r">summary(d.1$Count)
+</code></pre>
+
+<pre><code>##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+##    1.00   15.00   23.00   23.82   32.00   77.00
+</code></pre>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="codefont" id="slide-29" style="background:;">
+  <article data-timings="">
+    <pre><code class="r">dat$Date &lt;- as.Date(dat$Date, format=&#39;%m/%d/%Y %I:%M:%S %p&#39;)
+dat %&gt;% group_by(Beat, Date) %&gt;% summarise(Count=n()) %&gt;% 
+  mutate(timeDiff=Date-lag(Date)) %&gt;% 
+  group_by(Beat) %&gt;% 
+  summarise(meanTimeDiff=mean(timeDiff, na.rm=T))
+</code></pre>
+
+<pre><code>## Source: local data frame [303 x 2]
+## 
+##    Beat  meanTimeDiff
+## 1   111 16.90850 days
+## 2   112 17.89199 days
+## 3   113 21.23457 days
+## 4   114 59.36585 days
+## 5   121 54.82609 days
+## 6   122 11.23696 days
+## 7   123 15.70821 days
+## 8   124 22.88053 days
+## 9   131 16.80392 days
+## 10  132 10.78013 days
+## ..  ...           ...
+</code></pre>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="codefont" id="slide-30" style="background:;">
+  <article data-timings="">
+    <pre><code class="r">dat$Crime &lt;- dat$Crime %&gt;% tolower() %&gt;% gsub(&#39; &#39;, &#39;_&#39;, .)
+crimes &lt;- unique(dat$Crime)
+dat[, crimes] &lt;- 0
+for (crime in crimes) dat[dat$Crime == crime, crime] &lt;- 1
+d.2 &lt;- dat %&gt;% group_by(Crime, Year) %&gt;% summarise(Count=n())
+d.2
+</code></pre>
+
+<pre><code>## Source: local data frame [380 x 3]
+## Groups: Crime
+## 
+##    Crime Year Count
+## 1  arson 2001    21
+## 2  arson 2002    20
+## 3  arson 2003     7
+## 4  arson 2004    12
+## 5  arson 2005     9
+## 6  arson 2006    11
+## 7  arson 2007    10
+## 8  arson 2008    14
+## 9  arson 2009    11
+## 10 arson 2010    11
+## ..   ...  ...   ...
+</code></pre>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="codefont" id="slide-31" style="background:;">
+  <hgroup>
+    <h2>Regressions</h2>
+  </hgroup>
+  <article data-timings="">
+    <p>This is a placeholder slide for describing how to perform regression analyses</p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="codefont" id="slide-32" style="background:;">
+  <hgroup>
+    <h2>Plotting Data - Base R</h2>
+  </hgroup>
+  <article data-timings="">
+    
+<div style='float:left;width:48%;' class='centered'>
+  <p>Types of graphs:</p>
+
+<ul>
+<li><span style='color:#2F4F4F; font-weight:bold'>histogram</span></li>
+<li>line graph</li>
+<li>scatterplot</li>
+<li>more examples</li>
+</ul>
+
+</div>
+<div style='float:right;width:48%;'>
+  <pre><code class="r">plotData &lt;- table(dat$Crime)
+plot(plotData, xlab=&#39;Crime&#39;, ylab=&#39;Count&#39;, main=&#39;Crime Counts in Chicago&#39;)
+</code></pre>
+
+<p><img src="assets/fig/unnamed-chunk-24-1.png" alt="plot of chunk unnamed-chunk-24"> </p>
+
+</div>
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="codefont" id="slide-33" style="background:;">
+  <hgroup>
+    <h2>Plotting Data - Base R</h2>
+  </hgroup>
+  <article data-timings="">
+    
+<div style='float:left;width:48%;' class='centered'>
+  <p>Types of graphs:</p>
+
+<ul>
+<li>histogram</li>
+<li><span style='color:#2F4F4F; font-weight:bold'>line graph</span></li>
+<li>scatterplot</li>
+<li>more examples</li>
+</ul>
+
+</div>
+<div style='float:right;width:48%;'>
+  <pre><code class="r">plotData &lt;- dat %&gt;% group_by(Year) %&gt;% summarise(Count = n()) %&gt;% filter(Year &lt; 2015)
+plot(plotData$Year, plotData$Count, type=&#39;l&#39;, xlab=&#39;Year&#39;, ylab=&#39;Count&#39;, main=&#39;Crimes by Year in Chicago&#39;)
+</code></pre>
+
+<p><img src="assets/fig/unnamed-chunk-25-1.png" alt="plot of chunk unnamed-chunk-25"> </p>
+
+</div>
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="codefont" id="slide-34" style="background:;">
+  <hgroup>
+    <h2>Plotting Data - Base R</h2>
+  </hgroup>
+  <article data-timings="">
+    
+<div style='float:left;width:48%;' class='centered'>
+  <p>Types of graphs:</p>
+
+<ul>
+<li>histogram</li>
+<li>line graph</li>
+<li><span style='color:#2F4F4F; font-weight:bold'>scatterplot</span></li>
+<li>more examples</li>
+</ul>
+
+</div>
+<div style='float:right;width:48%;'>
+  <pre><code class="r">plotData &lt;- dat %&gt;% group_by(Crime, Year) %&gt;% summarise(Count = n()) %&gt;% filter(Crime %in% c(&#39;assault&#39;, &#39;battery&#39;))
+x &lt;- plotData$Count[plotData$Crime == &#39;assault&#39;]
+y &lt;- plotData$Count[plotData$Crime == &#39;battery&#39;]
+plot(x, y, type=&#39;p&#39;, xlab=&#39;Assault&#39;, ylab=&#39;Battery&#39;)
+</code></pre>
+
+<p><img src="assets/fig/unnamed-chunk-26-1.png" alt="plot of chunk unnamed-chunk-26"> </p>
+
+</div>
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="codefont noSlideNumber" id="slide-35" style="background:;">
+  <hgroup>
+    <h2>Plotting Data - Base R</h2>
+  </hgroup>
+  <article data-timings="">
+    
+<div style='float:left;width:48%;' class='centered'>
+  <p>Types of graphs:</p>
+
+<ul>
+<li>histogram</li>
+<li>line graph</li>
+<li><span style='color:#2F4F4F; font-weight:bold'>scatterplot</span></li>
+<li>more examples</li>
+</ul>
+
+</div>
+<div style='float:right;width:48%;'>
+  <pre><code class="r">plot(x, y, type=&#39;p&#39;, xlab=&#39;Assault&#39;, ylab=&#39;Battery&#39;)
+abline(lm(y ~ x), col=&#39;red&#39;)
+</code></pre>
+
+<p><img src="assets/fig/unnamed-chunk-27-1.png" alt="plot of chunk unnamed-chunk-27"> </p>
+
+</div>
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="codefont" id="slide-36" style="background:;">
+  <hgroup>
+    <h2>Plotting Data - Base R</h2>
+  </hgroup>
+  <article data-timings="">
+    
+<div style='float:left;width:48%;' class='centered'>
+  <p>Types of graphs:</p>
+
+<ul>
+<li>histogram</li>
+<li>line graph</li>
+<li>scatterplot</li>
+<li><span style='color:#2F4F4F; font-weight:bold'>more examples</span></li>
+</ul>
+
+</div>
+<div style='float:right;width:48%;'>
+  <p><img src="graphtypes.png" alt="MoreExamples.png"></p>
+
+</div>
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="codefont" id="slide-37" style="background:;">
+  <hgroup>
+    <h2>Plotting Data - ggplot2</h2>
+  </hgroup>
+  <article data-timings="">
+    <p>Same types of graphs, just much, much more control over the elements</p>
+
+<pre><code class="r">library(ggplot2)
+library(ggthemes)
+</code></pre>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="codefont" id="slide-38" style="background:;">
+  <hgroup>
+    <h2>Plotting Data - googleVis</h2>
+  </hgroup>
+  <article data-timings="">
+    <pre><code class="r">library(googleVis)
+library(rCharts)
+</code></pre>
+
+<p>googleVis allows for interactive graphs that show changes over time. Good for looking at total number of crimes by beat each year to see changes. </p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="codefont" id="slide-39" style="background:;">
+  <hgroup>
+    <h2>GIS/Spatial Analysis</h2>
+  </hgroup>
+  <article data-timings="">
+    <pre><code class="r">library(rMaps)
+library(ggmap)
+</code></pre>
+
+<p>Placeholder for:</p>
+
+<ul>
+<li>Chloropleth maps</li>
+<li>Heat maps</li>
+<li>Graduated symbol maps</li>
+</ul>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="title-slide mySegue" id="slide-40" style="background:;">
+  <hgroup>
+    <h2>Qualitative Analyses</h2>
+  </hgroup>
+  <article data-timings="">
+    
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="codefont" id="slide-41" style="background:;">
+  <hgroup>
+    <h2>Mining Twitter</h2>
+  </hgroup>
+  <article data-timings="">
+    <pre><code class="r">library(twitteR)
+searchTwitter(&#39; &#39;, n=5, geocode=&#39;39.7392,-104.9903,0.5mi&#39;)
+</code></pre>
+
+<pre><code>## [1] &quot;careersEDP: EDP Recruiting #QA #Job: QA / Deployment Engineer (#Denver, CO) http://t.co/84MLHP3PRR #Java #jobs http://t.co/XqID0Xr3ot&quot;
+## [2] &quot;ronNcaphill: How&#39;s the Pats-Broncos playoff record looking in non-Tebow years? #JustSaying https://t.co/KGVweR5KMp&quot;                   
+## [3] &quot;ronNcaphill: Maybe Jay Cutler (gasp) had the right idea in Denver after all? https://t.co/bm3VHV0CDg&quot;                                 
+## [4] &quot;FishSniper: “@marklevinshow: Exactly http://t.co/56saPgknHa”\nIt just gets worse w/@GOP RINOs&quot;                                        
+## [5] &quot;rachdemjayy: another wild adventure with this one\xed\xa0\xbd\xed\xb1\xbc\xed\xa0\xbc\xed\xbf\xbc\xed\xa0\xbd\xed\xb2\x9a @ Denver, Colorado https://t.co/bkfddUKr1i&quot;
+</code></pre>
+
+<pre><code class="r">searchTwitter(&#39;crime&#39;, n=5, geocode=&#39;40.7127,-74.0059,5mi&#39;)
+</code></pre>
+
+<pre><code>## [1] &quot;NXNYLive: \xed\xa0\xbd\xed\xb9\x8c Rooftop sessions with my partner in crime @djnodoubt #nxny #houseparadiso @ Rooftop 48 https://t.co/OLQkLiXQYJ&quot;         
+## [2] &quot;danomv: ACFCS Financial Crime Conference 2015 Day 2 (@ Rendezvous Trianon Ballroom in New York, NY) https://t.co/hEV5ejjkT8&quot;                        
+## [3] &quot;NewYorkCP: ‘He’s soft on crime’: Cops blast Brooklyn DA’s indictment rates: Brooklyn District Attorney Ken Thompson must… http://t.co/cVuOSto3Lh&quot;   
+## [4] &quot;ericthetallone: As Batgirl stares into the abyss of Crime Alley she thinks of vengeance! Okay, it&#39;s just… https://t.co/6QSE0HxVER&quot;                  
+## [5] &quot;NewYorkCP: Chaplains Say They Want To Join City Officials In Fight Against Violent Crime: Frustrated community leaders came… http://t.co/aP16UV4H9R&quot;
+</code></pre>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="codefont2" id="slide-42" style="background:;">
+  <article data-timings="">
+    
+<div style='float:left;width:48%;' class='centered'>
+  <pre><code class="r">library(tm)
+t.1 &lt;- searchTwitter(&#39;#nypd&#39;, n=5000)
+tweets &lt;- twListToDF(t.1)
+tweetTxt &lt;- iconv(tweets$text, 
+                   to=&#39;ASCII&#39;, sub=&#39;&#39;)
+myCorpus &lt;- Corpus(VectorSource(tweetText))
+myCorpus &lt;- myCorpus %&gt;%
+  tm_map(tolower) %&gt;%
+  tm_map(removePunctuation) %&gt;%
+  tm_map(removeNumbers) %&gt;%
+  tm_map(removeWords, 
+         stopwords(&#39;english&#39;))
+tdm &lt;- TermDocumentMatrix(myCorpus)
+term.freq &lt;- rowSums(as.matrix(tdm))
+d.1 &lt;- data.frame(&#39;Word&#39;=names(term.freq), 
+                  &#39;count&#39;=term.freq)
+d.1 &lt;- d.1 %&gt;% arrange(desc(Count)) %&gt;%
+  filter(!Word %in% myStopWords, 
+         row_number() &lt;= 20)
+</code></pre>
+
+</div>
+<div style='float:right;width:48%;'>
+  <p><img src="TextMine.png" alt="Word Graph"></p>
+
+</div>
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="codefont" id="slide-43" style="background:;">
+  <article data-timings="">
+    <pre><code class="r">user &lt;- getUser(&#39;hadleywickham&#39;)
+user$location
+</code></pre>
+
+<pre><code>## [1] &quot;Houston, TX&quot;
+</code></pre>
+
+<pre><code class="r">user$lastStatus$text
+</code></pre>
+
+<pre><code>## [1] &quot;@quominus the atomic vectors are; lists are basically vectors of pointers&quot;
+</code></pre>
+
+<pre><code class="r">friends &lt;- user$getFriends() %&gt;% 
+  lapply(function(z) z$screenName) %&gt;% unlist() %&gt;% unname()
+head(friends)
+</code></pre>
+
+<pre><code>## [1] &quot;stefanbache&quot;    &quot;millar_karl&quot;    &quot;NextRestaurant&quot; &quot;richierocks&quot;   
+## [5] &quot;aschweig&quot;       &quot;Voovarb&quot;
+</code></pre>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="codefont2" id="slide-44" style="background:;">
+  <hgroup>
+    <h2>Link Analyses</h2>
+  </hgroup>
+  <article data-timings="">
+    
+<div style='float:left;width:48%;' class='centered'>
+  <pre><code class="r">library(igraph)
+userList &lt;- lookupUsers(friends)
+realNames &lt;- c(&#39;Hadley Wickham&#39;, 
+               sapply(userList, 
+                      function(z) z$name) 
+               %&gt;% unname())
+adj.mat &lt;- length(realNames) %&gt;% 
+  matrix(0, nrow=., ncol=.)
+colnames(adj.mat) &lt;- rownames(adj.mat) &lt;- realNames
+adj.mat[1, -1] &lt;- 1
+idx &lt;- 1
+for (friend in friends) {
+  theirFriends &lt;- userList[[friend]]$getFriends() %&gt;% 
+    lapply(function(z) z$name) %&gt;% 
+    unlist() %&gt;% unname()
+  row.idx &lt;- which(rownames(adj.mat) == userList[[friend]]$name)
+  col.idx &lt;- which(colnames(adj.mat) %in% theirFriends)
+  if (!length(col.idx) == 0) adj.mat[row.idx, col.idx] &lt;- 1
+  fileName &lt;- paste(c(&#39;twitterPics/&#39;, userList[[friend]]$name, &#39;.&#39;, 
+                    file_ext(userList[[friend]]$profileImageUrl)),
+                    collapse=&#39;&#39;)
+  download.file(userList[[friend]]$profileImageUrl, destfile=fileName)
+  idx &lt;- idx + 1
+  if (idx %% 15 == 0) Sys.sleep(900)
+}
+
+twitter.net &lt;- graph.adjacency(adj.mat, diag=F, mode=&#39;undirected&#39;)
+l &lt;- layout.fruchterman.reingold(twitter.net, niter=10000, area=vcount(twitter.net)^2.3,
+                                  repulserad=vcount(twitter.net)^2.2)
+l &lt;- layout.norm(l, -1, 1, -1, 1)
+
+png(&quot;Twitter Graph.png&quot;, width = 2500, height = 2000)
+plot(twitter.net, vertex.size=degree(twitter.net)/20, vertex.label=NA,
+     vertex.color=&#39;white&#39;, vertex.shape=&quot;square&quot;, vertex.frame.color=&quot;white&quot;, 
+     edge.color=&#39;dark gray&#39;, edge.width=1, edge.arrow.size=0, edge.curved=0.3,  layout=l)
+img.sc &lt;- 0.03 #Image scaling
+images &lt;- c(&#39;twitterPics/Hadley Wickham.jpeg&#39;, sample(list.files(&#39;twitterPics&#39;, full.names=T), 223, replace=T))
+for (i in 1:dim(l)[1]) {
+  img &lt;- images[i]
+  if (grepl(&quot;jp[e]?g&quot;, img)) {
+    img &lt;- readJPEG(img)
+  } else if (grepl(&#39;png&#39;, img)) {
+    img &lt;- readPNG(img)
+  } else {
+    img &lt;- &#39;gray20&#39;
+  }
+  rasterImage(img, l[i,1]-img.sc, l[i,2]-img.sc, l[i,1]+img.sc, l[i,2]+img.sc)
+}
+dev.off()
+</code></pre>
+
+</div>
+<div style='float:right;width:48%;'>
+  <p><img src="Twitter%20Graph.png" alt="Twitter Network">
+<a href="Twitter%20Graph.png">View in new window</a></p>
+
+</div>
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="codefont2" id="slide-45" style="background:;">
+  <hgroup>
+    <h2>Reading the News (Advanced Topic)</h2>
+  </hgroup>
+  <article data-timings="">
+    
+<div style='float:left;width:48%;' class='centered'>
+  <p><q>&quot;The simplest way to conduct a periodical literature review is to employ <br>commercially available software that allows a keyword or phrase search.&quot;</q><cite> - Noah Fritz et al, Exploring Crime Analysis</cite>
+<p class="center"><em class="style2">I strongly disagree!</em></p><br>
+<img src="Email.png" alt="Emails"></p>
+
+</div>
+<div style='float:right;width:48%;'>
+  <pre><code class="r">#! usr/bin/env RScript
+
+library(RCurl)
+library(XML)
+suppressMessages(library(dplyr))
+
+#File Administration
+file.remove(dir(&#39;~/Documents/Daily News/&#39;, full.names=T))
+
+logFile &lt;- paste0(&#39;~/Documents/Web Crawler Log - &#39;, Sys.time(), &#39;.txt&#39;)
+file.create(logFile)
+
+newsFileText &lt;- paste0(&#39;~/Documents/Daily News/IMMC Monitor - &#39;, Sys.time(), &#39; (Text).txt&#39;)
+file.create(newsFileText)
+
+newsFileHTML &lt;- paste0(&#39;~/Documents/Daily News/IMMC Monitor - &#39;, Sys.time(), &#39; (HTML).txt&#39;)
+file.create(newsFileHTML)
+paste(&#39;&lt;html&gt;&lt;head&gt;&lt;/head&gt;&lt;body&gt;&#39;) %&gt;% write(., file=newsFileHTML)
+
+#Define functions
+link.format &lt;- function(link, root) {
+  if (!grepl(&#39;http[s]?://&#39;, link)) link &lt;- paste0(root, link)
+  return(link)
+}
+
+link.fetch &lt;- function(link, xpaths, root) {
+  html &lt;- getURL(link) %&gt;% htmlParse()
+  t.1 &lt;- sapply(xpaths, function(z) xpathSApply(html, z, xmlGetAttr, &#39;href&#39;)) %&gt;% 
+    unlist() %&gt;% unname()
+  t.1 &lt;- sapply(t.1, function(z) link.format(z, root)) %&gt;% unname()
+  write(txt, file=logFile, append=T)
+  return(t.1)
+}
+
+spider &lt;- function() {
+  #Reuters
+  root = &#39;http://www.reuters.com&#39;
+  navbar.links &lt;- link.fetch(&#39;http://www.reuters.com&#39;,
+                             &#39;//div[@id=&quot;nav-strip&quot;]//li[contains(@id, &quot;nav-item_&quot;)]/a&#39;,
+                             root)
+  navbar.links &lt;- navbar.links[2:6]
+
+  xpath &lt;- &#39;//div[@class=&quot;sectionContent&quot;]//div[contains(@class, &quot;column1&quot;)]//a&#39;
+  reuters.links &lt;- sapply(navbar.links, function(z) link.fetch(z, xpath, root)) %&gt;% 
+    unlist() %&gt;% unname()
+  reuters.links &lt;- reuters.links[grepl(&#39;.*/article/.*&#39;, reuters.links)]
+
+  #The BBC
+  root = &#39;http://m.bbc.com&#39;
+  navbar.links &lt;- link.fetch(&#39;http://m.bbc.com/news&#39;,
+                             &#39;//div[@class=&quot;navigation navigation--wide&quot;]//a&#39;,
+                             root)
+  navbar.links &lt;- navbar.links[grepl(&#39;world|uk|business|technology&#39;, navbar.links)]
+
+  xpaths &lt;- c(&#39;//div[@class=&quot;column--primary&quot;]/div[@id=&quot;comp-candy-asset-munger&quot; and contains(@class, &quot;buzzard&quot;)]//a&#39;,
+              &#39;//div[@class=&quot;column--primary&quot;]/div[@id=&quot;comp-candy-asset-munger&quot; and contains(@class, &quot;pigeon&quot;)]//a&#39;,
+              &#39;//div[@class=&quot;column--primary&quot;]/div[@id=&quot;comp-candy-asset-munger&quot; and contains(@class, &quot;macaw&quot;)]//a&#39;)
+
+  bbc.links &lt;- sapply(navbar.links, function(z) link.fetch(z, xpaths, root)) %&gt;% 
+    unlist() %&gt;% unname()
+  bbc.links &lt;- bbc.links[grepl(&#39;.*\\d$&#39;, bbc.links)]
+  bbc.links &lt;- bbc.links[!grepl(&#39;.*/sport/.*|.*/entertainment.*|.*/live/.*|.*/science.*|.*/health.*|.*/newsbeat/.*&#39;, bbc.links)]
+
+  #Al Jazeera
+  root = &#39;http://america.aljazeera.com&#39;
+  navbar.links &lt;- link.fetch(&#39;http://america.aljazeera.com&#39;,
+                             &#39;//div[contains(@class, &quot;header-sections-items&quot;)]/a&#39;,
+                             root)
+  navbar.links &lt;- navbar.links[1:4]
+
+  xpath &lt;- &#39;//div[@class=&quot;media-body&quot;]//h3/a&#39;
+  aljazeera.links &lt;- sapply(navbar.links, function(z) link.fetch(z, xpath, root)) %&gt;% 
+    unlist() %&gt;% unname()
+  aljazeera.links &lt;- aljazeera.links[grepl(&#39;.*/articles/.*&#39;, aljazeera.links)]
+
+
+  article.links &lt;- c(reuters.links, bbc.links, aljazeera.links, cnn.links)
+  bad.words &lt;- paste(c(&#39;.*/opinions/.*&#39;, &#39;.*/living/.*&#39;, &#39;.*/interactive/.*&#39;,
+                       &#39;.*/travel/.*&#39;, &#39;.*health.*&#39;), collapse=&#39;|&#39;)
+  article.links &lt;- article.links[!grepl(bad.words, article.links)]
+  return(article.links)
+}
+
+check.article &lt;- function(article, keywords) {
+  txt &lt;- getURL(article) %&gt;% htmlParse() %&gt;% xpathSApply(., &#39;//p&#39;, xmlValue)
+  t.1 &lt;- grepl(keywords, txt, ignore.case=T) %&gt;% unname()
+  if (sum(t.1) &gt;= 3) return(TRUE)
+  else return(FALSE)
+}
+
+sifter &lt;- function(links, keywords) {
+  keep &lt;- sapply(links, function(z) check.article(z, keywords))
+  l.s &lt;- links[keep]
+  return(links[keep])
+}
+
+parse.article &lt;- function(article) {
+  txt &lt;- getURL(article) %&gt;% htmlParse()
+  title &lt;- xpathSApply(txt, &#39;//h1&#39;, xmlValue)
+  title &lt;- ifelse(length(title) &gt; 1, title[1], title)
+  src &lt;- strsplit(article, &#39;http[s]?://www.|http[s]?://money.|http[s]?://m.|http[s]?://america.&#39;, fixed=F)[[1]][2]
+  src &lt;- strsplit(src, &#39;.com&#39;, fixed=T)[[1]][1] %&gt;% toupper()
+  if (src == &#39;BBC&#39;) {
+    smry &lt;- xpathSApply(txt, &#39;//div[@class=&quot;story-body&quot;]//p&#39;, xmlValue)[1]
+  } else if (src == &#39;REUTERS&#39;) {
+    src &lt;- &#39;Reuters&#39;
+    par &lt;- xpathSApply(txt, &#39;//p&#39;, xmlValue)
+    idx &lt;- grep(&#39;.*\\(Reuters\\)&#39;, par, value=F)
+    smry &lt;- par[idx] %&gt;% strsplit(., &#39;.*\\(Reuters\\)( - )?&#39;) %&gt;% unlist() %&gt;% .[2]
+  } else if (src == &#39;ALJAZEERA&#39;) {
+    src = &#39;Al Jazeera&#39;
+    smry = xpathSApply(txt, &#39;//p&#39;, xmlValue)[2]
+  }
+  v = list(&#39;Title&#39; = title, &#39;Source&#39; = src, &#39;Summary&#39; = smry, &#39;Link&#39; = article)
+  return(v)
+}
+
+write.to.txt &lt;- function(element) {
+  x &lt;- paste(c(element$Title, &#39; - (&#39;, element$Source, &#39;)\n\n&#39;, element$Summary,
+               &#39; Read more: &#39;, element$Article, &#39;\n\n&#39;), collapse=&#39;&#39;)
+  write(x, file=newsFileText, append=T)
+}
+
+write.to.html &lt;- function(element) {
+  x &lt;- paste(c(&#39;&lt;h4 style=&quot;margin-bottom:1px&quot;&gt;&#39;, element$Title, &#39; - (&#39;, element$Source, &#39;)&lt;/h4&gt;&lt;p&gt;&#39;,
+               element$Summary, &#39;&lt;br&gt;&lt;a href=&quot;&#39;, element$Link, &#39;&quot;&gt;Full Story&lt;/a&gt;&lt;/p&gt;&#39;),
+             collapse = &#39;&#39;)
+  write(x, file=newsFileHTML, append=T)
+}
+
+msg.prep &lt;- function(articles) {
+  v &lt;- lapply(articles, function(z) parse.article(z))
+  lapply(v, function(z) {
+    write.to.txt(z)
+    write.to.html(z)
+    })
+  write(&#39;&lt;/body&gt;&lt;/html&gt;&#39;, file=newsFileHTML, append=T)
+}
+
+#Run crawler and send the email
+x &lt;- spider()
+x &lt;- x[!duplicated(x)]
+
+keywords &lt;- c(&#39;laundering&#39;, &#39;Ira[nq]&#39;, &#39;Russia&#39;, &#39;Islam&#39;, &#39;Kurd&#39;, &#39;Ukraine&#39;,
+              &#39;Cyprus&#39;, &#39;fraud&#39;, &#39;theft&#39;, &#39;forgery&#39;, &#39;bsa&#39;,
+              &#39;sanction[s]?&#39;, &#39;narcotic[s]?&#39;, &#39;traffick(ing)?&#39;, &#39;hack(er)?(ing)?&#39;)
+keywords &lt;- paste(keywords, collapse=&#39;|&#39;)
+articles &lt;- sifter(x, keywords)
+
+msg.prep(articles)
+
+system(&#39;python ~/Python/Syntax/sendMail.py&#39;)
+
+print(&#39;Email sent. Please check your inbox.&#39;)
+rm(list=ls())
+</code></pre>
+
+</div>
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="codefont3" id="slide-46" style="background:;">
+  <hgroup>
+    <h2>Parsing PDFs (Advanced Topic)</h2>
+  </hgroup>
+  <article data-timings="">
+    <p><a href="Sample%20Report%20Redacted.pdf">Original PDF</a><br></p>
+
+<pre><code class="r">library(magrittr)
+library(XML)
+suppressMessages(library(dplyr))
+
+report.to.data &lt;- function(file) {
+  txt &lt;- readLines(con=file)
+  txt &lt;- gsub(&#39;?[[:space:]]?&#39;, &#39;&#39;, txt)
+
+  #Block off data for each &quot;report&quot;
+  headers&lt;- grep(&#39;[0-9]{10,13},[0-9]{13},&#39;, txt, value=T)
+  h.1 &lt;- which(txt %in% headers)
+  h.2 &lt;- h.1 - 1
+  h.2 &lt;- c(h.2[-1], length(txt))
+
+  txt.l &lt;- vector(&#39;list&#39;, length(headers))
+
+  for (i in 1:length(txt.l)) {
+    s &lt;- h.1[i]
+    f &lt;- h.2[i]
+    txt.l[[i]] &lt;- txt[s:f]
+  }
+
+  #Format annotation text
+  a.1 &lt;- lapply(txt.l, function(z) if (grepl(&#39;\\&quot;text/css\\&quot;&gt;&#39;, z[1])) paste(z[10:length(z)], collapse=&#39; &#39;) 
+                else paste(z, collapse=&#39; &#39;))
+  a.2 &lt;- lapply(a.1, function(z) if (grepl(&#39;^[0-9]&#39;, z)) unlist(z) %&gt;% strsplit(&#39;,&#39;) %&gt;% .[[1]] %&gt;% tail(., -22)
+                else z)
+  a.3 &lt;- lapply(a.2, function(z) unlist(z) %&gt;% strsplit(&#39;,|&gt;&#39;) %&gt;% 
+                  unlist() %&gt;% grep(&#39;^[[:space:]]|^[A-Za-z]&#39;, ., value=T))
+  a.4 &lt;- lapply(a.3, function(z) unlist(z) %&gt;% strsplit(&#39;&lt;/?.*$&#39;) %&gt;% unlist() %&gt;% paste(collapse=&#39; &#39;))
+
+  #Generate dataset
+  r.1 &lt;- lapply(txt.l, function(z) z[1] %&gt;% strsplit(&#39;,&#39;) %&gt;% unlist() %&gt;% .[c(1, 3, 4, 5, 7:10)])
+  dat &lt;- unlist(r.1) %&gt;% matrix(nrow=length(r.1), byrow=T) %&gt;% data.frame(stringsAsFactors=F)
+  names(dat) &lt;- c(&#39;PrimaryNumber&#39;, &#39;TargetProdID&#39;, &#39;StartTime&#39;, &#39;EndTime&#39;,
+                  &#39;SecondaryNumber&#39;, &#39;Originator&#39;, &#39;Var1&#39;, &#39;Var2&#39;)
+  dat$Annotation &lt;- a.4 %&gt;% lapply(., function(z) gsub(&#39;\\s+&#39;, &#39; &#39;, z)) %&gt;% 
+                  lapply(., function(z) gsub(&#39;^\\s|\\s$&#39;, &#39;&#39;, z))                
+
+  #Format dataset
+  dat &lt;- dat[!duplicated(dat), ]
+  dat$StartTime &lt;- dat$StartTime %&gt;% as.POSIXct(format=&#39;%m-%d-%Y %H:%M:%S&#39;)
+  dat$EndTime &lt;- dat$EndTime %&gt;% as.POSIXct(format=&#39;%m-%d-%Y %H:%M:%S&#39;)
+  dat$StartTime &lt;- dat$StartTime - 14400
+  dat$EndTime &lt;- dat$EndTime - 14400
+
+  #Combine records with same TargetProdID
+  d.1 &lt;- dat %&gt;% group_by(PrimaryNumber, TargetProdID) %&gt;% summarise(Annotation=paste(Annotation, collapse=&#39; &#39;))
+  dat &lt;- dat %&gt;% group_by(PrimaryNumber, TargetProdID) %&gt;% filter(row_number() == 1) %&gt;% 
+            select(PrimaryNumber:SecondaryNumber) %&gt;% inner_join(., d.1) %&gt;% arrange(PrimaryNumber, TargetProdID)
+  return(dat)
+}
+</code></pre>
+
+<pre><code>##    PrimaryNumber SecondaryNumber       Date StartTime  EndTime
+## 1 (123) 555-2270  (123) 555-4946 2014-10-26  10:48:13 10:54:46
+## 2 (123) 555-4040 (123) 555-22367 2015-01-03  13:32:29 13:32:33
+## 3 (123) 555-2973 (123) 555-34380 2014-10-11  11:31:38 11:45:06
+## 4 (123) 555-4364   Not Available 2014-12-29  09:48:23 09:48:35
+## 5 (123) 555-3255  (123) 555-5400 2014-10-01  12:26:52 12:27:17
+##                                                         Annotation
+## 1 No audio on this call. The call lasted 6 minutes and 33 seconds.
+## 2                                                    tp No answer.
+## 3  tp Unk/f to Redacted... Talking abouthis needed dentistry work.
+## 4       The call went to voice message. No voice message was left.
+## 5                                                no answer hung up
+</code></pre>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-47" style="background:;">
+  <hgroup>
+    <h2>Final Thoughts</h2>
+  </hgroup>
+  <article data-timings="">
+    <ul>
+<li>R is an extremely powerful language, but it&#39;s also complicated.</li>
+<li>There are a ton of resources out there that can help you problem solve any issues you may be having, provided you know the tricks. </li>
+<li>Some of the more useful resources:
+
+<ul>
+<li>R Documentation (?[function])</li>
+<li>Stack Overflow (<a href="http://www.stackoverflow.com">www.stackoverflow.com</a>)</li>
+<li>The R Analyst (<a href="http://www.theRanalyst.com">www.theRanalyst.com</a>)</li>
+<li>RStudio Cheatsheets (<a href="http://www.rstudio.com/resources/cheatsheets/">http://www.rstudio.com/resources/cheatsheets/</a>)</li>
+<li>Coursera (<a href="http://www.coursera.org/course/compdata">www.coursera.org/course/compdata</a>)</li>
+</ul></li>
+</ul>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-48" style="background:;">
+  <hgroup>
+    <h2>Questions?</h2>
+  </hgroup>
+  <article data-timings="">
+    <p><img src="Questions.jpg" alt="Questions"></p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-49" style="background:;">
+  <hgroup>
+    <h2>Contact Information</h2>
+  </hgroup>
+  <article data-timings="">
+    <p>Office: (212) 335-4309<br>
+Professionial: <a href="mailto:brittenb@dany.nyc.gov">brittenb@dany.nyc.gov</a><br><br>
+Cell: (517) 410-3184<br>
+Personal: <a href="mailto:britten.bryan@gmail.com">britten.bryan@gmail.com</a><br></p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+    <slide class="backdrop"></slide>
+  </slides>
+  <div class="pagination pagination-small" id='io2012-ptoc' style="display:none;">
+    <ul>
+      <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=1 title='Introductions'>
+         1
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=2 title='Who am I?'>
+         2
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=3 title='What is R?'>
+         3
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=4 title='Why Use R?'>
+         4
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=5 title='Before We Get Started'>
+         5
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=6 title='Loading and Querying Data'>
+         6
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=7 title='Loading Data into R'>
+         7
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=8 title='Querying Data - SQL'>
+         8
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=9 title=''>
+         9
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=10 title=''>
+         10
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=11 title=''>
+         11
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=12 title=''>
+         12
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=13 title='Querying Data - Base R'>
+         13
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=14 title=''>
+         14
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=15 title=''>
+         15
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=16 title=''>
+         16
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=17 title=''>
+         17
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=18 title=''>
+         18
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=19 title=''>
+         19
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=20 title=''>
+         20
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=21 title='Working With Data - dplyr'>
+         21
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=22 title=''>
+         22
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=23 title=''>
+         23
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=24 title='Summary'>
+         24
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=25 title='Quantitative Analyses'>
+         25
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=26 title='Descriptive Statistics'>
+         26
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=27 title=''>
+         27
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=28 title=''>
+         28
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=29 title=''>
+         29
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=30 title=''>
+         30
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=31 title='Regressions'>
+         31
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=32 title='Plotting Data - Base R'>
+         32
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=33 title='Plotting Data - Base R'>
+         33
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=34 title='Plotting Data - Base R'>
+         34
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=35 title='Plotting Data - Base R'>
+         35
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=36 title='Plotting Data - Base R'>
+         36
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=37 title='Plotting Data - ggplot2'>
+         37
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=38 title='Plotting Data - googleVis'>
+         38
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=39 title='GIS/Spatial Analysis'>
+         39
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=40 title='Qualitative Analyses'>
+         40
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=41 title='Mining Twitter'>
+         41
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=42 title=''>
+         42
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=43 title=''>
+         43
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=44 title='Link Analyses'>
+         44
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=45 title='Reading the News (Advanced Topic)'>
+         45
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=46 title='Parsing PDFs (Advanced Topic)'>
+         46
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=47 title='Final Thoughts'>
+         47
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=48 title='Questions?'>
+         48
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=49 title='Contact Information'>
+         49
+      </a>
+    </li>
+  </ul>
+  </div>  <!--[if IE]>
+    <script 
+      src="http://ajax.googleapis.com/ajax/libs/chrome-frame/1/CFInstall.min.js">  
+    </script>
+    <script>CFInstall.check({mode: 'overlay'});</script>
+  <![endif]-->
+</body>
+  <!-- Load Javascripts for Widgets -->
+  <script src="/Library/Frameworks/R.framework/Versions/3.1/Resources/library/slidifyLibraries/libraries/widgets/bootstrap/js/bootstrap.min.js"></script>
+<script src="/Library/Frameworks/R.framework/Versions/3.1/Resources/library/slidifyLibraries/libraries/widgets/bootstrap/js/bootbox.min.js"></script>
+<script src="/Library/Frameworks/R.framework/Versions/3.1/Resources/library/slidifyLibraries/libraries/widgets/interactive/js/ace/js/ace.js"></script>
+<script src="/Library/Frameworks/R.framework/Versions/3.1/Resources/library/slidifyLibraries/libraries/widgets/interactive/js/interactive.js"></script>
+
+  <script>  
+  $(function (){ 
+    $("#example").popover(); 
+    $("[rel='tooltip']").tooltip(); 
+  });  
+  </script>  
+  <script src="shared/shiny.js" type="text/javascript"></script>
+  <script src="shared/slider/js/jquery.slider.min.js"></script>
+  <script src="shared/bootstrap/js/bootstrap.min.js"></script>
+  <link rel="stylesheet" href="shared/slider/css/jquery.slider.min.css"></link>
+  
+  <!-- LOAD HIGHLIGHTER JS FILES -->
+  <script src="/Library/Frameworks/R.framework/Versions/3.1/Resources/library/slidifyLibraries/libraries/highlighters/highlight.js/highlight.pack.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script>
+  <!-- DONE LOADING HIGHLIGHTER JS FILES -->
+   
+  </html>
